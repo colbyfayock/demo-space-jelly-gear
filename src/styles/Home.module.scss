@@ -1,0 +1,63 @@
+@import "@styles/settings/__settings";
+@import "@styles/util/__util";
+
+.hero {
+  position: relative;
+}
+
+.heroContent {
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+  height: 100%;
+  color: white;
+  padding-left: 3em;
+
+  h2 {
+    font-size: 4vw;
+    margin: 0;
+  }
+
+  p {
+
+    font-size: 2vw;
+    margin-top: .5em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+  }
+
+}
+
+.products {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 3em;
+}
+
+.productTitle {
+  font-size: 1.4em;
+  margin: .4em 0 0;
+}
+
+.productPrice {
+  margin: .4em 0 0;
+}
+
+.productImage {
+
+  & > div {
+    display: block!important;
+  }
+
+}

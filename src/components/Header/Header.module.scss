@@ -1,0 +1,87 @@
+@import "@styles/settings/__settings";
+
+.header {
+
+  width: 100%;
+  font-size: 1.2em;
+  background-color: $color-header-background;
+  color: white;
+  padding: 1em 0;
+
+  p {
+    margin: 0;
+  }
+
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  flex-grow: 1;
+  font-size: 1.3em;
+  font-weight: $font-weight-black;
+}
+
+.headerLinks {
+
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0 2em;
+
+  li {
+
+    margin: 0 .8em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+  }
+
+  a {
+    color: $color-header-links;
+  }
+
+}
+
+.headerCart {
+
+  button {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $color-header-links;
+    font-size: .9em;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    svg {
+      color: $color-header-links;
+      margin-right: .5em;
+    }
+
+  }
+
+}
+
+.headerLocales {
+
+  @extend .headerLinks;
+  margin: 0 0 0 2em;
+
+  a {
+    text-transform: uppercase;
+  }
+
+}

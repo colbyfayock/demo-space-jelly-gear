@@ -1,0 +1,20 @@
+@import "@styles/util/__util";
+
+.productWrapper {
+  display: flex;
+}
+
+.productImage {
+
+  width: 50%;
+  margin-right: 2em;
+
+  & > div {
+    display: block!important;
+  }
+
+}
+
+.productPrice {
+  margin: .4em 0 0;
+}
