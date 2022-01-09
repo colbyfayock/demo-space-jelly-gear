@@ -7,16 +7,48 @@ import {
   InMemoryCache,
   gql
 } from "@apollo/client";
+import GoogleMapReact from 'google-map-react';
+import center from '@turf/center';
+import { points } from '@turf/helpers';
+import { getCoord } from '@turf/meta';
 
 import Layout from '@components/Layout';
 import Container from '@components/Container';
 import Button from '@components/Button';
+import Marker from '@components/Marker';
 
 import products from '@data/products';
 
-import styles from '@styles/Home.module.scss'
+import styles from '@styles/Page.module.scss'
 
 export default function Home({ storeLocations }) {
+  const [activeStore, setActiveStore] = useState();
+
+  const features = points(storeLocations.map(({ location }) => {
+    return [location.latitude, location.longitude]
+  }));
+
+  const [lat, lng] = center(features)?.geometry.coordinates;
+
+  const props = {
+    center: {
+      lat,
+      lng
+    },
+    zoom: 4
+  };
+
+  if ( activeStore ) {
+    const { location } = storeLocations.find(({ id }) => id === activeStore);
+
+    props.center = {
+      lat: location.latitude,
+      lng: location.longitude,
+    }
+
+    props.zoom = 14;
+  }
+
   return (
     <Layout>
       <Head>
@@ -27,17 +59,51 @@ export default function Home({ storeLocations }) {
       <Container>
         <h1>Find a Store</h1>
 
-        <h2>Locations</h2>
+        <div className={styles.stores}>
+          <div className={styles.storesLocations}>
+            <h2 className={styles.storesLocationsTitle}>Locations</h2>
 
-        <ul>
-          {storeLocations.map(location => {
-            return (
-              <li key={location.id}>
-                {location.name}
-              </li>
-            )
-          })}
-        </ul>
+            <p>
+              <em>Click store to see on map</em>
+            </p>
+
+            <ul className={styles.locations}>
+              {storeLocations.map(location => {
+                function handleOnClick() {
+                  setActiveStore(location.id);
+                }
+                return (
+                  <li key={location.id} onClick={handleOnClick} data-is-active-store={activeStore === location.id}>
+                    <p className={styles.locationName}>
+                      {location.name}
+                    </p>
+                    <address>
+                      { location.address }
+                    </address>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className={styles.storesMap}>
+            <div className={styles.storesMapContainer}>
+              <GoogleMapReact
+                bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+                {...props}
+              >
+                {storeLocations.map(location => {
+                  const { latitude, longitude } = location.location;
+                  function handleOnClick() {
+                    setActiveStore(location.id);
+                  }
+                  return (
+                    <Marker key={location.id} lat={latitude} lng={longitude} onClick={handleOnClick} />
+                  )
+                })}
+              </GoogleMapReact>
+            </div>
+          </div>
+        </div>
       </Container>
     </Layout>
   )
@@ -53,6 +119,7 @@ export async function getStaticProps() {
     query: gql`
       query Stores {
         storeLocations {
+          address
           name
           id
           location {

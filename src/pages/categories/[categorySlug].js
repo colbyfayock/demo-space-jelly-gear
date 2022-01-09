@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 import {
   ApolloClient,
@@ -7,12 +6,14 @@ import {
   gql
 } from "@apollo/client";
 
+import { buildRemoteUrl } from '@lib/cloudinary';
+
 import Layout from '@components/Layout';
 import Header from '@components/Header';
 import Container from '@components/Container';
 import Button from '@components/Button';
 
-import styles from '@styles/Home.module.scss'
+import styles from '@styles/Page.module.scss'
 
 export default function Category({ category }) {
   const { products } = category;
@@ -36,7 +37,7 @@ export default function Category({ category }) {
                 <Link href={`/products/${product.slug}`}>
                   <a>
                     <div className={styles.productImage}>
-                      <Image width={images[0].width} height={images[0].height} src={images[0].url} alt="" />
+                      <img width={images[0].width} height={images[0].height} src={buildRemoteUrl(images[0].url)} alt="" />
                     </div>
                     <h3 className={styles.productTitle}>
                       { product.name }

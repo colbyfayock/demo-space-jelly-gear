@@ -8,13 +8,15 @@ import {
   gql
 } from "@apollo/client";
 
+import { buildRemoteUrl } from '@lib/cloudinary';
+
 import Layout from '@components/Layout';
 import Container from '@components/Container';
 import Button from '@components/Button';
 
 import products from '@data/products';
 
-import styles from '@styles/Home.module.scss'
+import styles from '@styles/Page.module.scss'
 
 export default function Home({ page, products }) {
   return (
@@ -34,12 +36,12 @@ export default function Home({ page, products }) {
                 <h2>{ page.heroTitle }</h2>
                 <p>{ page.heroText }</p>
               </div>
-              <Image width={page.heroBackground.width} height={page.heroBackground.height} src={page.heroBackground.url} alt="" />
+              <img width={page.heroBackground.width} height={page.heroBackground.height} src={buildRemoteUrl(page.heroBackground.url)} alt="" />
             </a>
           </Link>
         </div>
 
-        <h2>Featured Gear</h2>
+        <h2 className={styles.heading}>Featured Gear</h2>
 
         <ul className={styles.products}>
           {products.map(product => {
@@ -49,7 +51,7 @@ export default function Home({ page, products }) {
                 <Link href={`/products/${product.slug}`}>
                   <a>
                     <div className={styles.productImage}>
-                      <Image width={images[0].width} height={images[0].height} src={images[0].url} alt="" />
+                      <img width={images[0].width} height={images[0].height} src={buildRemoteUrl(images[0].url)} alt="" />
                     </div>
                     <h3 className={styles.productTitle}>
                       { product.name }
@@ -60,7 +62,14 @@ export default function Home({ page, products }) {
                   </a>
                 </Link>
                 <p>
-                  <Button>
+                  <Button
+                    className="snipcart-add-item"
+                    data-item-id={product.slug}
+                    data-item-price={product.price}
+                    data-item-url={`/products/${product.slug}`}
+                    data-item-image={images[0].url}
+                    data-item-name={product.name}
+                  >
                     Add to Cart
                   </Button>
                 </p>

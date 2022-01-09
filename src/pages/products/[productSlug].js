@@ -1,10 +1,11 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import {
   ApolloClient,
   InMemoryCache,
   gql
 } from "@apollo/client";
+
+import { buildRemoteUrl } from '@lib/cloudinary';
 
 import Layout from '@components/Layout';
 import Header from '@components/Header';
@@ -25,7 +26,7 @@ export default function Product({ product }) {
       <Container>
         <div className={styles.productWrapper}>
           <div className={styles.productImage}>
-            <Image width={images[0].width} height={images[0].height} src={images[0].url} alt="" />
+            <img width={images[0].width} height={images[0].height} src={buildRemoteUrl(images[0].url)} alt="" />
           </div>
           <div className={styles.productContent}>
             <h1>{ product.name }</h1>
