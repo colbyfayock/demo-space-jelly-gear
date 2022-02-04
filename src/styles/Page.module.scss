@@ -94,8 +94,35 @@
   margin-right: 2em;
 }
 
-.storesLocationsTitle {
-  margin-top: 0;
+.locationDiscovery {
+
+  a,
+  button {
+
+    display: inline-flex;
+    align-items: center;
+    font-size: 1em;
+    text-decoration: underline;
+    background: none;
+    padding: 0;
+    border: none;
+    margin: 0 .4em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    svg {
+      font-size: .9em;
+      margin-left: .4em;
+    }
+
+  }
+
 }
 
 .locations {
@@ -134,4 +161,13 @@
 .storesMapContainer {
   width: 100%;
   aspect-ratio: 800 / 500;
+}
+
+
+
+
+
+.homeMap {
+  width: 100%;
+  height: 20rem;
 }

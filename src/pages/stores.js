@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link';
@@ -7,15 +7,16 @@ import {
   InMemoryCache,
   gql
 } from "@apollo/client";
-import GoogleMapReact from 'google-map-react';
 import center from '@turf/center';
 import { points } from '@turf/helpers';
 import { getCoord } from '@turf/meta';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 import Layout from '@components/Layout';
 import Container from '@components/Container';
 import Button from '@components/Button';
 import Marker from '@components/Marker';
+import Map from '@components/Map';
 
 import products from '@data/products';
 
@@ -28,26 +29,7 @@ export default function Home({ storeLocations }) {
     return [location.latitude, location.longitude]
   }));
 
-  const [lat, lng] = center(features)?.geometry.coordinates;
-
-  const props = {
-    center: {
-      lat,
-      lng
-    },
-    zoom: 4
-  };
-
-  if ( activeStore ) {
-    const { location } = storeLocations.find(({ id }) => id === activeStore);
-
-    props.center = {
-      lat: location.latitude,
-      lng: location.longitude,
-    }
-
-    props.zoom = 14;
-  }
+  const [defaultLat, defaultLng] = center(features)?.geometry.coordinates;
 
   return (
     <Layout>
@@ -57,29 +39,35 @@ export default function Home({ storeLocations }) {
       </Head>
 
       <Container>
-        <h1>Find a Store</h1>
+        <h1>Locations</h1>
 
         <div className={styles.stores}>
           <div className={styles.storesLocations}>
-            <h2 className={styles.storesLocationsTitle}>Locations</h2>
-
-            <p>
-              <em>Click store to see on map</em>
-            </p>
-
             <ul className={styles.locations}>
               {storeLocations.map(location => {
                 function handleOnClick() {
                   setActiveStore(location.id);
                 }
                 return (
-                  <li key={location.id} onClick={handleOnClick} data-is-active-store={activeStore === location.id}>
+                  <li key={location.id}>
                     <p className={styles.locationName}>
                       {location.name}
                     </p>
                     <address>
                       { location.address }
                     </address>
+                    <p>
+                      { location.phoneNumber }
+                    </p>
+                    <p className={styles.locationDiscovery}>
+                      <button onClick={handleOnClick} data-is-active-store={activeStore === location.id}>
+                        View on Map
+                      </button>
+                      <a href={`https://www.google.com/maps/dir//${location.location.latitude},${location.location.longitude}/@${location.location.latitude},${location.location.longitude},15z`} target="_blank" rel="noreferrer">
+                        Get Directions
+                        <FaExternalLinkAlt />
+                      </a>
+                    </p>
                   </li>
                 )
               })}
@@ -87,20 +75,39 @@ export default function Home({ storeLocations }) {
           </div>
           <div className={styles.storesMap}>
             <div className={styles.storesMapContainer}>
-              <GoogleMapReact
-                bootstrapURLKeys={{ key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
-                {...props}
-              >
-                {storeLocations.map(location => {
-                  const { latitude, longitude } = location.location;
-                  function handleOnClick() {
-                    setActiveStore(location.id);
-                  }
+              <Map className={styles.homeMap} center={[defaultLat, defaultLng]} zoom={4}>
+                {({ TileLayer, Marker, Popup }, map) => {
+                  useEffect(() => {
+                    if ( !activeStore ) return;
+
+                    const { location } = storeLocations.find(({ id }) => id === activeStore);
+
+                    map.setView([location.latitude, location.longitude], 14);
+                  }, [activeStore])
                   return (
-                    <Marker key={location.id} lat={latitude} lng={longitude} onClick={handleOnClick} />
+                    <>
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                      />
+                      {storeLocations.map(location => {
+                        const { latitude, longitude } = location.location;
+                        function handleOnClick() {
+                          setActiveStore(location.id);
+                        }
+                        return (
+                          <Marker key={location.id} position={[latitude, longitude]} onClick={handleOnClick}>
+                            <Popup>
+                              <p><strong>{ location.name }</strong></p>
+                              <address>{ location.address }</address>
+                            </Popup>
+                          </Marker>
+                        )
+                      })}
+                    </>
                   )
-                })}
-              </GoogleMapReact>
+                }}
+              </Map>
             </div>
           </div>
         </div>
@@ -126,6 +133,7 @@ export async function getStaticProps() {
             longitude
             latitude
           }
+          phoneNumber
         }
       }
     `
