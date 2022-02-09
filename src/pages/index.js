@@ -37,7 +37,7 @@ export default function Home({ page, products }) {
                 <p>{ page.heroText }</p>
               </div>
               <picture className={styles.heroImage}>
-                <source media="(max-width: 719px)" srcset={buildRemoteUrl(page.heroBackground.url, {
+                <source media="(max-width: 719px)" srcSet={buildRemoteUrl(page.heroBackground.url, {
                   transformations: {
                     gravity: 'auto:subject',
                     resize: {
@@ -47,7 +47,7 @@ export default function Home({ page, products }) {
                     }
                   }
                 })} />
-                <source media="(min-width: 720px)" srcset={buildRemoteUrl(page.heroBackground.url)} />
+                <source media="(min-width: 720px)" srcSet={buildRemoteUrl(page.heroBackground.url)} />
                 <img src={buildRemoteUrl(page.heroBackground.url)} alt="" />
               </picture>
             </a>

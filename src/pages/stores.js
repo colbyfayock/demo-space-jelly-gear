@@ -79,15 +79,17 @@ export default function Home({ storeLocations }) {
             <div className={styles.storesMapContainer}>
               <Map className={styles.map} center={[defaultLat, defaultLng]} zoom={4} zoomControl={false}>
                 {({ TileLayer, Marker, Popup, ZoomControl }, map) => {
-                  useEffect(() => {
-                    if ( !activeStore ) return;
-
-                    const { location } = storeLocations.find(({ id }) => id === activeStore);
-
-                    map.setView([location.latitude, location.longitude], 14);
-                  }, [activeStore])
+                  const MapEffect = ({ locations, activeId }) => {
+                    useEffect(() => {
+                      if ( !activeId ) return;
+                      const { location } = locations.find(({ id }) => id === activeId);
+                      map.setView([location.latitude, location.longitude], 14);
+                    }, [activeId])
+                    return null;
+                  }
                   return (
                     <>
+                      <MapEffect locations={storeLocations} activeId={activeStore} />
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
