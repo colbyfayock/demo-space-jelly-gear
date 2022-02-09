@@ -31,12 +31,25 @@ export default function Home({ page, products }) {
 
         <div className={styles.hero}>
           <Link href={page.heroLink}>
-            <a>
+            <a className={styles.heroLink}>
               <div className={styles.heroContent}>
                 <h2>{ page.heroTitle }</h2>
                 <p>{ page.heroText }</p>
               </div>
-              <img width={page.heroBackground.width} height={page.heroBackground.height} src={buildRemoteUrl(page.heroBackground.url)} alt="" />
+              <picture className={styles.heroImage}>
+                <source media="(max-width: 719px)" srcset={buildRemoteUrl(page.heroBackground.url, {
+                  transformations: {
+                    gravity: 'auto:subject',
+                    resize: {
+                      type: 'crop',
+                      width: 800,
+                      height: 400
+                    }
+                  }
+                })} />
+                <source media="(min-width: 720px)" srcset={buildRemoteUrl(page.heroBackground.url)} />
+                <img src={buildRemoteUrl(page.heroBackground.url)} alt="" />
+              </picture>
             </a>
           </Link>
         </div>
@@ -91,6 +104,20 @@ export async function getStaticProps({ locale }) {
   const { data } = await client.query({
     query: gql`
       query Home($locale: Locale!) {
+        category(where: {slug: "featured"}) {
+          products {
+            name
+            id
+            images {
+              id
+              url
+              width
+              height
+            }
+            price
+            slug
+          }
+        }
         page(where: {slug: "home"}) {
           id
           heroLink
@@ -106,18 +133,6 @@ export async function getStaticProps({ locale }) {
             heroTitle
           }
         }
-        products {
-          name
-          id
-          images {
-            id
-            url
-            width
-            height
-          }
-          price
-          slug
-        }
       }
     `,
     variables: {
@@ -125,7 +140,7 @@ export async function getStaticProps({ locale }) {
     }
   })
 
-  const { products } = data;
+  const { products } = data?.category;
 
   let page = data.page;
 

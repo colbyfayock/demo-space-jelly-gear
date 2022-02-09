@@ -23,7 +23,7 @@ import products from '@data/products';
 import styles from '@styles/Page.module.scss'
 
 export default function Home({ storeLocations }) {
-  const [activeStore, setActiveStore] = useState();
+  const [activeStore, setActiveStore] = useState()
 
   const features = points(storeLocations.map(({ location }) => {
     return [location.latitude, location.longitude]
@@ -42,6 +42,7 @@ export default function Home({ storeLocations }) {
         <h1>Locations</h1>
 
         <div className={styles.stores}>
+
           <div className={styles.storesLocations}>
             <ul className={styles.locations}>
               {storeLocations.map(location => {
@@ -60,7 +61,7 @@ export default function Home({ storeLocations }) {
                       { location.phoneNumber }
                     </p>
                     <p className={styles.locationDiscovery}>
-                      <button onClick={handleOnClick} data-is-active-store={activeStore === location.id}>
+                      <button onClick={handleOnClick} >
                         View on Map
                       </button>
                       <a href={`https://www.google.com/maps/dir//${location.location.latitude},${location.location.longitude}/@${location.location.latitude},${location.location.longitude},15z`} target="_blank" rel="noreferrer">
@@ -73,10 +74,11 @@ export default function Home({ storeLocations }) {
               })}
             </ul>
           </div>
+
           <div className={styles.storesMap}>
             <div className={styles.storesMapContainer}>
-              <Map className={styles.homeMap} center={[defaultLat, defaultLng]} zoom={4}>
-                {({ TileLayer, Marker, Popup }, map) => {
+              <Map className={styles.map} center={[defaultLat, defaultLng]} zoom={4} zoomControl={false}>
+                {({ TileLayer, Marker, Popup, ZoomControl }, map) => {
                   useEffect(() => {
                     if ( !activeStore ) return;
 
@@ -92,9 +94,11 @@ export default function Home({ storeLocations }) {
                       />
                       {storeLocations.map(location => {
                         const { latitude, longitude } = location.location;
+
                         function handleOnClick() {
                           setActiveStore(location.id);
                         }
+
                         return (
                           <Marker key={location.id} position={[latitude, longitude]} onClick={handleOnClick}>
                             <Popup>
@@ -104,6 +108,7 @@ export default function Home({ storeLocations }) {
                           </Marker>
                         )
                       })}
+                      <ZoomControl position="bottomright" />
                     </>
                   )
                 }}

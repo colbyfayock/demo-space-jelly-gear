@@ -27,6 +27,8 @@ const Map = ({ children, className, ...rest }) => {
         iconUrl: iconUrl.src,
         shadowUrl: shadowUrl.src,
       });
+
+
     })();
   }, []);
 

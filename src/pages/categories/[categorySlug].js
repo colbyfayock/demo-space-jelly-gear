@@ -48,7 +48,14 @@ export default function Category({ category }) {
                   </a>
                 </Link>
                 <p>
-                  <Button>
+                  <Button
+                    className="snipcart-add-item"
+                    data-item-id={product.slug}
+                    data-item-price={product.price}
+                    data-item-url={`/products/${product.slug}`}
+                    data-item-image={images[0].url}
+                    data-item-name={product.name}
+                  >
                     Add to Cart
                   </Button>
                 </p>
@@ -137,7 +144,13 @@ export async function getStaticPaths() {
   });
 
   return {
-    paths,
+    paths: [
+      ...paths,
+      ...paths.map(path => ({
+        ...path,
+        locale: 'es'
+      }))
+    ],
     fallback: false
   }
 }

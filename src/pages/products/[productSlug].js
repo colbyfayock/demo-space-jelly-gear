@@ -30,13 +30,21 @@ export default function Product({ product }) {
           </div>
           <div className={styles.productContent}>
             <h1>{ product.name }</h1>
-            <div dangerouslySetInnerHTML={{
-              __html: product.description.html
+            <div className={styles.productDescription} dangerouslySetInnerHTML={{
+              __html: product.description?.html
             }} />
-            <p className={product.price}>
+            <p className={styles.productPrice}>
+              ${ product.price.toFixed(2) }
             </p>
-            <p>
-              <Button>
+            <p className={styles.productBuy}>
+              <Button
+                className="snipcart-add-item"
+                data-item-id={product.slug}
+                data-item-price={product.price}
+                data-item-url={`/products/${product.slug}`}
+                data-item-image={images[0].url}
+                data-item-name={product.name}
+              >
                 Add to Cart
               </Button>
             </p>
