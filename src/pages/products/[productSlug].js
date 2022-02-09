@@ -5,7 +5,7 @@ import {
   gql
 } from "@apollo/client";
 
-import { buildRemoteUrl } from '@lib/cloudinary';
+import { buildUrlByPublicId } from '@lib/cloudinary';
 
 import Layout from '@components/Layout';
 import Header from '@components/Header';
@@ -15,7 +15,7 @@ import Button from '@components/Button';
 import styles from '@styles/Product.module.scss'
 
 export default function Product({ product }) {
-  const { images } = product;
+  const { image } = product;
   return (
     <Layout>
       <Head>
@@ -26,7 +26,7 @@ export default function Product({ product }) {
       <Container>
         <div className={styles.productWrapper}>
           <div className={styles.productImage}>
-            <img width={images[0].width} height={images[0].height} src={buildRemoteUrl(images[0].url)} alt="" />
+            <img width={image.width} height={image.height} src={buildUrlByPublicId(image.public_id)} alt="" />
           </div>
           <div className={styles.productContent}>
             <h1>{ product.name }</h1>
@@ -42,7 +42,7 @@ export default function Product({ product }) {
                 data-item-id={product.slug}
                 data-item-price={product.price}
                 data-item-url={`/products/${product.slug}`}
-                data-item-image={images[0].url}
+                data-item-image={buildUrlByPublicId(image.public_id)}
                 data-item-name={product.name}
               >
                 Add to Cart
@@ -72,12 +72,7 @@ export async function getStaticProps({ params, locale }) {
             html
           }
           id
-          images {
-            id
-            url
-            width
-            height
-          }
+          image
           localizations(locales: [$locale]) {
             description {
               html

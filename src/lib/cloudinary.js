@@ -12,3 +12,9 @@ export function buildRemoteUrl(image, options) {
     ...options
   })
 }
+
+export function buildUrlByPublicId(publicId, options) {
+  return buildUrl(publicId, {
+    ...options
+  })
+}

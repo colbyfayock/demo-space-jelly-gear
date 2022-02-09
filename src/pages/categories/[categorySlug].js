@@ -6,7 +6,7 @@ import {
   gql
 } from "@apollo/client";
 
-import { buildRemoteUrl } from '@lib/cloudinary';
+import { buildUrlByPublicId } from '@lib/cloudinary';
 
 import Layout from '@components/Layout';
 import Header from '@components/Header';
@@ -31,13 +31,17 @@ export default function Category({ category }) {
 
         <ul className={styles.products}>
           {products.map(product => {
-            const { images } = product;
+            const { image } = product;
             return (
               <li key={product.id}>
                 <Link href={`/products/${product.slug}`}>
                   <a>
                     <div className={styles.productImage}>
-                      <img width={images[0].width} height={images[0].height} src={buildRemoteUrl(images[0].url)} alt="" />
+                      <img width={image.width} height={image.height} src={buildUrlByPublicId(image.public_id, {
+                          transformations: {
+                            width: 500, height: 500
+                          }
+                        })} alt="" />
                     </div>
                     <h3 className={styles.productTitle}>
                       { product.name }
@@ -53,7 +57,7 @@ export default function Category({ category }) {
                     data-item-id={product.slug}
                     data-item-price={product.price}
                     data-item-url={`/products/${product.slug}`}
-                    data-item-image={images[0].url}
+                    data-item-image={buildUrlByPublicId(image.public_id)}
                     data-item-name={product.name}
                   >
                     Add to Cart
@@ -90,12 +94,7 @@ export async function getStaticProps({ params }) {
           products {
             name
             id
-            images {
-              id
-              url
-              width
-              height
-            }
+            image
             price
             slug
           }
